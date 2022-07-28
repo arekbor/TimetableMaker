@@ -1,0 +1,8 @@
+*csproj
+*/obj
+*/bin
+TimetableMakerDatabase/TimetableMakerDatabase.dbmdl
+TimetableMakerDatabase/TimetableMakerDatabase.jfm
+TimetableMakerDatabase/TimetableMakerDatabase.sqlproj
+TimetableMakerDatabase/TimetableMakerDatabase.sqlproj.user
+TimetableMakerApi/*.json
