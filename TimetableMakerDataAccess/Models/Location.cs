@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TimetableMakerDataAccess.Models;
 
-namespace TimetableMakerDataAccess.Models
+public class Location
 {
-    internal class Location
-    {
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Zone { get; set; }
 }

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TimetableMakerDataAccess.Models;
 
-namespace TimetableMakerDataAccess.Models
+public class Mode
 {
-    internal class Mode
-    {
-    }
+    public int Id { get; set; }
+    public string Type { get; set; }
+    public string Model { get; set; }
+    public int Seats { get; set; }
 }
