@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TimetableMakerDataAccess.Models;
 
-namespace TimetableMakerDataAccess.Contracts
+namespace TimetableMakerDataAccess.Contracts;
+
+public interface IData<T>
 {
-    internal interface IModeData
-    {
-    }
+    Task DeleteAsync(int id);
+    Task<T> GetAsync(int id);
+    Task InsetAsync(T obj);
+    Task UpdateModeAsync(T obj);
 }

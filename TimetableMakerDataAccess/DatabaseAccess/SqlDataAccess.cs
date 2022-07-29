@@ -2,6 +2,7 @@
 using TimetableMakerDataAccess.Contracts;
 using System.Data;
 using System.Data.SqlClient;
+using Dapper;
 
 namespace TimetableMakerDataAccess.DatabaseAccess;
 
@@ -16,16 +17,18 @@ public class SqlDataAccess : ISqlDataAccess
         string storedProcedure, U parameters, 
         string connectionId = "Default")
     {
-        using IDbConnection dbConnection = new SqlConnection(_configuration.GetConnectionString(connectionId));
-        return await dbConnection.OpenAsync<T>
+        using var dbConnection = new SqlConnection(_configuration.GetConnectionString(connectionId));
+        return await dbConnection.QueryAsync<T>
             (storedProcedure, parameters, commandType: CommandType.StoredProcedure);
     }
 
-    public Task SaveDataAsync<T>(
+    public async Task SaveDataAsync<T>(
         string storedProdecure, 
         T parameters,
         string connectionId = "Default")
     {
-        throw new NotImplementedException();
+        using var dbConnection = new SqlConnection(_configuration.GetConnectionString(connectionId));
+        await dbConnection.ExecuteAsync
+            (storedProdecure, parameters, commandType: CommandType.StoredProcedure);
     }
 }

@@ -1,10 +1,18 @@
+using TimetableMakerApi;
+using TimetableMakerDataAccess.Contracts;
+using TimetableMakerDataAccess.Data;
+using TimetableMakerDataAccess.DatabaseAccess;
+using TimetableMakerDataAccess.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddSingleton<IData<Mode>, ModeData>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
@@ -17,8 +25,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
-app.MapControllers();
+app.UseTimetableApi();
 
 app.Run();
