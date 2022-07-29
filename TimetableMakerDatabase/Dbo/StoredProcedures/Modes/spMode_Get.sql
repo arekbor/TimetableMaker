@@ -1,6 +1,8 @@
-﻿CREATE PROCEDURE [dbo].[spMode_Get]
-	@param1 int = 0,
-	@param2 int
-AS
-	SELECT @param1, @param2
-RETURN 0
+﻿create procedure [dbo].[spMode_Get]
+	@modeId int
+as
+begin
+	select [id], [type], [model], [seats] 
+	from [dbo].[Modes]
+	where [id] = @modeId;
+end

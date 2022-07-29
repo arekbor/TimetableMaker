@@ -1,7 +1,7 @@
 ﻿create procedure [dbo].[spRoute_Insert]
 	@lineId int,
 	@locationId int,
-	@arrivalTime datetime
+	@arrivalTime time
 as
 begin
 	insert into [dbo].[Routes] ([lineId], [locationId], [arrivalTime])
