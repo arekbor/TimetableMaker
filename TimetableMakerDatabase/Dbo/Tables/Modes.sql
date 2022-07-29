@@ -5,6 +5,6 @@
 	[type] nvarchar(50) not null,
 	-- model of transport mode (Pafawag 5B/6B, Solaris Urbino 12, Konstal 105Na etc.)
 	[model] nvarchar(50) not null,
-	-- max allow seats in vehicle
+	-- max allow seats in transport mode
 	[seats] int not null
 );

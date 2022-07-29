@@ -1,7 +1,8 @@
 ﻿create table [dbo].[Locations] (
+	-- identificator of location
 	[id] int not null identity(1,1) primary key,
 	-- name of stop 
-	[name] varchar(50) not null,
+	[name] nvarchar(50) not null,
 	-- name of city or commune
-	[zone] varchar(50) not null
+	[zone] nvarchar(50) not null
 );
