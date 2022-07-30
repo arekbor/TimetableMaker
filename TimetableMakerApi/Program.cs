@@ -1,8 +1,6 @@
 using TimetableMakerApi;
 using TimetableMakerDataAccess.Contracts;
-using TimetableMakerDataAccess.Data;
-using TimetableMakerDataAccess.DatabaseAccess;
-using TimetableMakerDataAccess.Models;
+using TimetableMakerDataAccess.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
-builder.Services.AddSingleton<IData<Mode>, ModeData>();
+builder.Services.AddSingleton<IModeRepository, ModeRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();

@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using TimetableMakerDataAccess.Dtos;
+using TimetableMakerDataAccess.Models;
 
-namespace TimetableMakerDataAccess
+namespace TimetableMakerDataAccess;
+
+public class MappingProfile:Profile
 {
-    internal class MappingProfile
+    public MappingProfile()
     {
+        CreateMap<Mode, ModeDto>()
+            .ReverseMap();
     }
 }

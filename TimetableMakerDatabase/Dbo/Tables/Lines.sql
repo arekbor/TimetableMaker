@@ -2,7 +2,7 @@
 	-- identificator of line
 	[id] int not null identity(1,1) primary key,
 	-- name of line
-	[lineName] varchar(10) not null,
+	[lineName] varchar(10) not null unique,
 	-- reference transport modeid
 	[modeId] int not null foreign key references [dbo].[Modes](id),
 );
