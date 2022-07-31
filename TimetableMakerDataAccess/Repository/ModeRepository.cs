@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Dapper;
+using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
 using TimetableMakerDataAccess.Contracts;
+using TimetableMakerDataAccess.Data;
 using TimetableMakerDataAccess.Models;
 
 namespace TimetableMakerDataAccess.Repository;
@@ -18,8 +21,11 @@ public class ModeRepository : IModeRepository
         values
         (@type, @model, @seats);";
 
-        return await SqlDapperHelper<Mode>
-            .SqlExecuteAsync(sql, _configuration, entity);
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.ExecuteAsync(sql, entity);
     }
 
     public async Task<int> DeleteAsync(int id)
@@ -28,8 +34,11 @@ public class ModeRepository : IModeRepository
         delete from [Modes] 
         where [id] = @id;";
 
-        return await SqlDapperHelper<Location>
-            .SqlExecuteParamsAsync(sql, _configuration, new { id = id });
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.ExecuteAsync(sql, new { id = id});
     }
 
     public async Task<IReadOnlyList<Mode>> GetAllAsync()
@@ -38,8 +47,11 @@ public class ModeRepository : IModeRepository
         select [id], [type], [model], [seats]
         from [Modes];";
 
-        var result = await SqlDapperHelper<Mode>
-            .SqlQueryAsync(sql, _configuration);
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        var result = await dbConn.QueryAsync<Mode>(sql);
         return result.ToList();
     }
 
@@ -50,8 +62,11 @@ public class ModeRepository : IModeRepository
         from [Modes]
         where [id] = @id;";
 
-        return await SqlDapperHelper<Mode>
-            .SqlQuerySignleOrDefaultParamsAsync(sql, _configuration, new { id = id });
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.QuerySingleOrDefaultAsync<Mode>(sql, new { id = id});
     }
 
     public async Task<int> UpdateAsync(Mode entity)
@@ -63,7 +78,10 @@ public class ModeRepository : IModeRepository
         [seats] = IsNull(@seats, [seats])
         where [id] = @id;";
 
-        return await SqlDapperHelper<Mode>
-            .SqlExecuteAsync(sql, _configuration, entity);
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.ExecuteAsync(sql, entity);
     }
 }

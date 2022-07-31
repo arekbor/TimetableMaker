@@ -1,6 +1,9 @@
 ﻿
+using Dapper;
 using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
 using TimetableMakerDataAccess.Contracts;
+using TimetableMakerDataAccess.Data;
 using TimetableMakerDataAccess.Models;
 
 namespace TimetableMakerDataAccess.Repository;
@@ -18,8 +21,11 @@ public class RouteRepository : IRouteRepository
         insert into [Routes] ([lineId], [locationId], [arrivalTime])
         values (@lineId, @locationId, @arrivalTime);";
 
-        return await SqlDapperHelper<RouteLines>
-            .SqlExecuteAsync(sql, _configuration, entity);
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.ExecuteAsync(sql, entity);
     }
 
     public async Task<int> DeleteAsync(int id)
@@ -28,8 +34,11 @@ public class RouteRepository : IRouteRepository
         delete from [Routes]
         where [id] = @id;";
 
-        return await SqlDapperHelper<RouteLines>
-            .SqlExecuteParamsAsync(sql, _configuration, new { id = id });
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.ExecuteAsync(sql, new { id = id});
     }
 
     public async Task<IReadOnlyList<RouteLines>> GetAllAsync()
@@ -38,8 +47,11 @@ public class RouteRepository : IRouteRepository
         select [id], [lineId], [locationId], format([arrivalTime], N'hh\:mm\:ss') as arrivalTime
         from [Routes];";
 
-        var result = await SqlDapperHelper<RouteLines>
-            .SqlQueryAsync(sql, _configuration);
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        var result = await dbConn.QueryAsync<RouteLines>(sql);
         return result.ToList();
     }
 
@@ -50,8 +62,11 @@ public class RouteRepository : IRouteRepository
         from [Routes]
         where [id] = @id";
 
-        return await SqlDapperHelper<RouteLines>
-            .SqlQuerySignleOrDefaultParamsAsync(sql, _configuration, new { id = id });
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.QuerySingleOrDefaultAsync<RouteLines>(sql, new { id = id});
     }
 
     public async Task<int> UpdateAsync(RouteLines entity)
@@ -63,7 +78,10 @@ public class RouteRepository : IRouteRepository
         [arrivalTime] = IsNull(@arrivalTime, [arrivalTime])
         where [id] = @id;";
 
-        return await SqlDapperHelper<RouteLines>
-            .SqlExecuteAsync(sql, _configuration, entity);
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.ExecuteAsync(sql, entity);
     }
 }

@@ -11,30 +11,30 @@ public static class LinesApi
     {
         app.MapGet("allLines", GetAllLinesAsync);
         app.MapGet("line", GetLineByIdAsync);
-        app.MapGet("lineMode", GetLineModeByIdAsync);
-        app.MapGet("allLinesModes", GetAllLinesModesAsync);
+        app.MapGet("lineRoutes", GetLineRoutesByIdAsync);
+        app.MapGet("allLineRoutes", GetAllLineRoutesAsync);
         app.MapPost("line", AddLineAsync);
         app.MapPut("line", UpdateLineAsync);
         app.MapDelete("line", DeleteLineAsync);
     }
-    private static async Task<IResult> GetAllLinesModesAsync(
+    private static async Task<IResult> GetAllLineRoutesAsync(
         ILineRepository lineRepository) {
         try
         {
             return Results.Ok
-                (await lineRepository.GetAllLinesModesAsync());
+                (await lineRepository.GetAllLineRoutesAsync());
         }
         catch (Exception ex)
         {
             return Results.Problem(ex.Message);
         }
     }
-    private static async Task<IResult> GetLineModeByIdAsync(
+    private static async Task<IResult> GetLineRoutesByIdAsync(
         int id,
         ILineRepository lineRepository) {
         try
         {
-            var entity = await lineRepository.GetLineModeByIdAsync(id);
+            var entity = await lineRepository.GetLineRoutesByIdAsync(id);
             if (entity is null) return Results.NotFound();
             return Results.Ok(entity);
         }

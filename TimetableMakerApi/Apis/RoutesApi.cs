@@ -65,7 +65,7 @@ public static class RoutesApi
         IMapper mapper){
         try
         {
-            var route = mapper.Map<TimetableMakerDataAccess.Models.RouteLines>(routeDto);
+            var route = mapper.Map<RouteLines>(routeDto);
             route.Id = id;
             var rowsAffected = await routeRepository.UpdateAsync(route);
             if (rowsAffected > 0)

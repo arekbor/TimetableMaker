@@ -15,30 +15,61 @@ public class LineRepository : ILineRepository
     {
         _configuration = configuration;
     }
-       
-    public async Task<IReadOnlyList<LineModeDto>> GetAllLinesModesAsync()
+
+    public async Task<IEnumerable<LineModeDto>> GetAllLineRoutesAsync()
     {
+        //TODO fix sql code
         const string sql = @"
-        select [lineName], [type], [model], [seats]
+        select [Lines].[id] as lineId, [lineName], [type], [model], [seats]
         from [Modes]
         inner join [Lines]
-        on [Modes].[id] = [Lines].[modeId];";
+        on [Modes].[id] = [Lines].[modeId];
 
-        var result = await SqlDapperHelper<LineModeDto>
-            .SqlQueryAsync(sql, _configuration);
-        return result.ToList();
+        select [name], [zone], format([arrivalTime], N'hh\:mm\:ss') as arrivalTime
+        from [Locations]
+        inner join [Routes]
+        on [Locations].id = [Routes].[locationId];";
+
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        using var multipleQuery = await dbConn.QueryMultipleAsync(sql);
+
+        var resultLineModeDto = await multipleQuery.ReadAsync<LineModeDto>();
+
+        var routeLocationDto = await multipleQuery.ReadAsync<RouteLocationDto>();
+        
+        resultLineModeDto.ToList()
+            .ForEach(lineModeDto => lineModeDto.RouteLocationDto = routeLocationDto.ToList());
+        return resultLineModeDto;
     }
-    public async Task<LineModeDto> GetLineModeByIdAsync(int id)
+
+    public async Task<LineModeDto> GetLineRoutesByIdAsync(int id)
     {
         const string sql = @"
         select [lineName], [type], [model], [seats]
         from [Modes]
         inner join [Lines]
         on [Modes].[id] = [Lines].[modeId]
-        where [Lines].[id] = @id;";
+        where [Lines].[id] = @id;
 
-        return await SqlDapperHelper<LineModeDto>.
-            SqlQuerySignleOrDefaultParamsAsync(sql, _configuration, new { id = id });
+        select [name], [zone], format([arrivalTime], N'hh\:mm\:ss') as arrivalTime
+        from [Locations]
+        inner join [Routes]
+        on [Locations].id = [Routes].[locationId]
+        where [Routes].[lineId] = @id;";
+
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        using var multipleQuery = await dbConn.QueryMultipleAsync(sql, new { id = id});
+        var resultLineModeDto = await multipleQuery.ReadFirstAsync<LineModeDto>();
+        var resultRouteLocationDto = await multipleQuery.ReadAsync<RouteLocationDto>();
+
+        resultLineModeDto.RouteLocationDto = resultRouteLocationDto.ToList();
+        return resultLineModeDto;
     }
 
     public async Task<int> AddAsync(Line entity)
@@ -47,8 +78,11 @@ public class LineRepository : ILineRepository
         insert into [Lines] ([lineName], [modeId])
         values (@lineName, @modeId);";
 
-        return await SqlDapperHelper<Line>
-            .SqlExecuteAsync(sql, _configuration, entity);
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.ExecuteAsync(sql, entity);
     }
 
     public async Task<int> DeleteAsync(int id)
@@ -57,8 +91,11 @@ public class LineRepository : ILineRepository
         delete from [Lines]
         where [id] = @id;";
 
-        return await SqlDapperHelper<Location>
-            .SqlExecuteParamsAsync(sql, _configuration, new { id = id });
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.ExecuteAsync(sql, new { id = id});
     }
 
     public async Task<IReadOnlyList<Line>> GetAllAsync()
@@ -67,8 +104,11 @@ public class LineRepository : ILineRepository
         select [id], [lineName], [modeId]
         from [Lines];";
 
-        var result = await SqlDapperHelper<Line>
-            .SqlQueryAsync(sql, _configuration);
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        var result = await dbConn.QueryAsync<Line>(sql);
         return result.ToList();
     }
 
@@ -79,8 +119,11 @@ public class LineRepository : ILineRepository
         from [Lines]
         where [id] = @id;";
 
-        return await SqlDapperHelper<Line>
-            .SqlQuerySignleOrDefaultParamsAsync(sql, _configuration, new { id = id });
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.QuerySingleOrDefaultAsync<Line>(sql, new { id = id});
     }
 
     public async Task<int> UpdateAsync(Line entity)
@@ -91,7 +134,10 @@ public class LineRepository : ILineRepository
         [modeId] = IsNull(@modeId, [modeId])
         where [id] = @id";
 
-        return await SqlDapperHelper<Line>
-            .SqlExecuteAsync(sql, _configuration, entity);
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.ExecuteAsync(sql, entity);
     }
 }
