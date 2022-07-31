@@ -13,5 +13,8 @@ public class MappingProfile:Profile
 
         CreateMap<Location, LocationDto>()
             .ReverseMap();
+
+        CreateMap<Line, LineDto>()
+            .ReverseMap();
     }
 }

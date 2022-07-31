@@ -5,7 +5,7 @@ using TimetableMakerDataAccess.Data;
 
 namespace TimetableMakerDataAccess;
 
-internal static class SqlService<T>
+internal static class SqlDapperHelper<T>
 {
     internal static async Task<int> SqlExecuteAsync(string sql,IConfiguration configuration, T entity) {
         using var dbConn =

@@ -8,7 +8,7 @@ namespace TimetableMakerApi;
 public static class ModesApi
 {
     public static void UseModesApi(this WebApplication app) {
-        app.MapGet("modesAll", GetAllModesAsync);
+        app.MapGet("allModes", GetAllModesAsync);
         app.MapGet("mode", GetModeByIdAsync);
         app.MapPost("mode", AddModeAsync);
         app.MapPut("mode", UpdateModeAsync);
@@ -18,8 +18,8 @@ public static class ModesApi
         IModeRepository modeRepository) {
         try
         {
-            var entities = await modeRepository.GetAllAsync();
-            return Results.Ok(entities);
+            return Results.Ok
+                (await modeRepository.GetAllAsync());
         }
         catch (Exception ex)
         {

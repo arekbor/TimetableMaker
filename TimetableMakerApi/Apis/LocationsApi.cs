@@ -8,7 +8,7 @@ namespace TimetableMakerApi.Apis;
 public static class LocationsApi
 {
     public static void UseLocationsApi(this WebApplication app) {
-        app.MapGet("locationsAll", GetAllLocationsAsync);
+        app.MapGet("allLocations", GetAllLocationsAsync);
         app.MapGet("location", GetLocationByIdAsync);
         app.MapPost("location", AddLocationAcyns);
         app.MapPut("location", UpdateLocationAcyns); 
@@ -18,8 +18,8 @@ public static class LocationsApi
         ILocationRepository locationRepository) {
         try
         {
-            var result = await locationRepository.GetAllAsync();
-            return Results.Ok(result);
+            return Results.Ok
+                (await locationRepository.GetAllAsync());
         }
         catch (Exception ex)
         {
@@ -57,7 +57,8 @@ public static class LocationsApi
             return Results.Problem(ex.Message);
         }
     }
-    private static async Task<IResult> UpdateLocationAcyns(int id, 
+    private static async Task<IResult> UpdateLocationAcyns(
+        int id, 
         LocationDto locationDto, 
         ILocationRepository locationRepository, 
         IMapper mapper) {
