@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Dapper;
+using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
 using TimetableMakerDataAccess.Contracts;
+using TimetableMakerDataAccess.Data;
+using TimetableMakerDataAccess.Dtos;
 using TimetableMakerDataAccess.Models;
 
 namespace TimetableMakerDataAccess.Repository;
@@ -11,6 +15,32 @@ public class LineRepository : ILineRepository
     {
         _configuration = configuration;
     }
+       
+    public async Task<IReadOnlyList<LineModeDto>> GetAllLinesModesAsync()
+    {
+        const string sql = @"
+        select [lineName], [type], [model], [seats]
+        from [Modes]
+        inner join [Lines]
+        on [Modes].[id] = [Lines].[modeId];";
+
+        var result = await SqlDapperHelper<LineModeDto>
+            .SqlQueryAsync(sql, _configuration);
+        return result.ToList();
+    }
+    public async Task<LineModeDto> GetLineModeByIdAsync(int id)
+    {
+        const string sql = @"
+        select [lineName], [type], [model], [seats]
+        from [Modes]
+        inner join [Lines]
+        on [Modes].[id] = [Lines].[modeId]
+        where [Lines].[id] = @id;";
+
+        return await SqlDapperHelper<LineModeDto>.
+            SqlQuerySignleOrDefaultParamsAsync(sql, _configuration, new { id = id });
+    }
+
     public async Task<int> AddAsync(Line entity)
     {
         const string sql = @"
