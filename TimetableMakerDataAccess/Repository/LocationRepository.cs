@@ -1,8 +1,5 @@
-﻿using Dapper;
-using Microsoft.Extensions.Configuration;
-using System.Data.SqlClient;
+﻿using Microsoft.Extensions.Configuration;
 using TimetableMakerDataAccess.Contracts;
-using TimetableMakerDataAccess.Data;
 using TimetableMakerDataAccess.Models;
 
 namespace TimetableMakerDataAccess.Repository;
@@ -20,11 +17,8 @@ public class LocationRepository : ILocationRepository
         insert into [Locations] ([name], [zone])
         values (@name, @zone);";
 
-        using var dbConn =
-            new SqlConnection(_configuration.GetConnectionString(
-                ConfigurationRepository.ConfigurationDatabase));
-
-        return await dbConn.ExecuteAsync(sql, entity);
+        return await SqlDapperHelper<Location>
+            .SqlExecuteAsync(sql, _configuration, entity);
     }
 
     public async Task<int> DeleteAsync(int id)
@@ -33,11 +27,8 @@ public class LocationRepository : ILocationRepository
         delete from [Locations]
         where [id] = @id";
 
-        using var dbConn =
-            new SqlConnection(_configuration.GetConnectionString(
-                ConfigurationRepository.ConfigurationDatabase));
-
-        return await dbConn.ExecuteAsync(sql, new { id = id });
+        return await SqlDapperHelper<Location>
+            .SqlExecuteParamsAsync(sql,_configuration, new { id = id });
     }
 
     public async Task<IReadOnlyList<Location>> GetAllAsync()
@@ -46,11 +37,8 @@ public class LocationRepository : ILocationRepository
         select [id], [name], [zone] 
         from [Locations]";
 
-        using var dbConn =
-            new SqlConnection(_configuration.GetConnectionString(
-                ConfigurationRepository.ConfigurationDatabase));
-
-        var result = await dbConn.QueryAsync<Location>(sql);
+        var result = await SqlDapperHelper<Location>
+            .SqlQueryAsync(sql, _configuration);
         return result.ToList();
     }
 
@@ -61,11 +49,8 @@ public class LocationRepository : ILocationRepository
         from [Locations]
         where [id] = @id";
 
-        using var dbConn =
-            new SqlConnection(_configuration.GetConnectionString(
-                ConfigurationRepository.ConfigurationDatabase));
-
-        return await dbConn.QuerySingleOrDefaultAsync<Location>(sql, new { id = id });
+        return await SqlDapperHelper<Location>
+            .SqlQuerySignleOrDefaultParamsAsync(sql, _configuration, new { id = id });
     }
 
     public async Task<int> UpdateAsync(Location entity)
@@ -76,10 +61,7 @@ public class LocationRepository : ILocationRepository
         [zone] = IsNull(@zone, [zone])
         where [id] = @id;";
 
-        using var dbConn =
-            new SqlConnection(_configuration.GetConnectionString(
-                ConfigurationRepository.ConfigurationDatabase));
-
-        return await dbConn.ExecuteAsync(sql, entity);
+        return await SqlDapperHelper<Location>
+            .SqlExecuteAsync(sql, _configuration, entity);
     }
 }
