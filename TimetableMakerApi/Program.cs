@@ -1,4 +1,5 @@
 using TimetableMakerApi;
+using TimetableMakerApi.Apis;
 using TimetableMakerDataAccess.Contracts;
 using TimetableMakerDataAccess.Repository;
 
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IModeRepository, ModeRepository>();
+builder.Services.AddSingleton<ILocationRepository, LocationRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
@@ -22,6 +24,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseTimetableApi();
+app.UseModesApi();
+app.UseLocationsApi();
 
 app.Run();

@@ -10,5 +10,8 @@ public class MappingProfile:Profile
     {
         CreateMap<Mode, ModeDto>()
             .ReverseMap();
+
+        CreateMap<Location, LocationDto>()
+            .ReverseMap();
     }
 }

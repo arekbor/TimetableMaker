@@ -7,21 +7,20 @@ using TimetableMakerDataAccess.Models;
 
 namespace TimetableMakerDataAccess.Repository;
 
-public class ModeRepository : IModeRepository
+public class LocationRepository : ILocationRepository
 {
     private readonly IConfiguration _configuration;
-    public ModeRepository(IConfiguration configuration)
+    public LocationRepository(IConfiguration configuration)
     {
         _configuration = configuration;
     }
-    public async Task<int> AddAsync(Mode entity)
+    public async Task<int> AddAsync(Location entity)
     {
         const string sql = @"
-        insert into [Modes] ([type], [model], [seats])
-        values
-        (@type, @model, @seats);";
+        insert into [Locations] ([name], [zone])
+        values (@name, @zone);";
 
-        using var dbConn = 
+        using var dbConn =
             new SqlConnection(_configuration.GetConnectionString(
                 ConfigurationRepository.ConfigurationDatabase));
 
@@ -31,8 +30,8 @@ public class ModeRepository : IModeRepository
     public async Task<int> DeleteAsync(int id)
     {
         const string sql = @"
-        delete from [Modes] 
-        where [id] = @id;";
+        delete from [Locations]
+        where [id] = @id";
 
         using var dbConn =
             new SqlConnection(_configuration.GetConnectionString(
@@ -41,41 +40,40 @@ public class ModeRepository : IModeRepository
         return await dbConn.ExecuteAsync(sql, new { id = id });
     }
 
-    public async Task<IReadOnlyList<Mode>> GetAllAsync()
+    public async Task<IReadOnlyList<Location>> GetAllAsync()
     {
         const string sql = @"
-        select [id], [type], [model], [seats]
-        from [Modes];";
+        select [id], [name], [zone] 
+        from [Locations]";
 
         using var dbConn =
             new SqlConnection(_configuration.GetConnectionString(
                 ConfigurationRepository.ConfigurationDatabase));
 
-        var result = await dbConn.QueryAsync<Mode>(sql);
+        var result = await dbConn.QueryAsync<Location>(sql);
         return result.ToList();
     }
 
-    public async Task<Mode> GetByIdAsync(int id)
+    public async Task<Location> GetByIdAsync(int id)
     {
         const string sql = @"
-        select [id], [type], [model], [seats]
-        from [Modes]
-        where [id] = @id;";
+        select [id], [name], [zone] 
+        from [Locations]
+        where [id] = @id";
 
         using var dbConn =
             new SqlConnection(_configuration.GetConnectionString(
                 ConfigurationRepository.ConfigurationDatabase));
 
-        return await dbConn.QuerySingleOrDefaultAsync<Mode>(sql, new { id = id});
+        return await dbConn.QuerySingleOrDefaultAsync<Location>(sql, new { id = id });
     }
 
-    public async Task<int> UpdateAsync(Mode entity)
+    public async Task<int> UpdateAsync(Location entity)
     {
         const string sql = @"
-        update [Modes] set
-        [type] = IsNull(@type, [type]),
-        [model] = IsNull(@model, [model]),
-        [seats] = IsNull(@seats, [seats])
+        update [Locations] set
+        [name] = IsNull(@name, [name]),
+        [zone] = IsNull(@zone, [zone])
         where [id] = @id;";
 
         using var dbConn =
