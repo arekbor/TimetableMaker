@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using TimetableMakerDataAccess.Models;
 
-namespace TimetableMakerDataAccess.Contracts
+namespace TimetableMakerDataAccess.Contracts;
+
+public interface IModeRepository: IRepository<Mode>
 {
-    public interface IModeRepository: IRepository<Mode>
-    {
-    }
 }

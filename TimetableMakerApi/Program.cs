@@ -25,5 +25,6 @@ app.UseHttpsRedirection();
 app.UseModesApi();
 app.UseLocationsApi();
 app.UseLinesApi();
+app.UseRoutesApi();
 
 app.Run();

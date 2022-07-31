@@ -16,5 +16,8 @@ public class MappingProfile:Profile
 
         CreateMap<Line, LineDto>()
             .ReverseMap();
+
+        CreateMap<RouteLines, RouteLinesDto>()
+            .ReverseMap();
     }
 }

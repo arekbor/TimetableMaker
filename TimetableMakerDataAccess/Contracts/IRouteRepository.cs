@@ -2,7 +2,6 @@
 
 namespace TimetableMakerDataAccess.Contracts;
 
-public interface IRouteRepository:IRepository<Route>
+public interface IRouteRepository:IRepository<RouteLines>
 {
-
 }

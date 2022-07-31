@@ -1,9 +1,9 @@
 ﻿
 namespace TimetableMakerDataAccess.Dtos;
 
-public class RouteDto
+public class RouteLinesDto
 {
     public int LineId { get; set; }
     public int LocationId { get; set; }
-    public TimeOnly ArrivalTime { get; set; }
+    public string ArrivalTime { get; set; }
 }

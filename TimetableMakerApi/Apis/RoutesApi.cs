@@ -9,7 +9,11 @@ public static class RoutesApi
 {
     public static void UseRoutesApi(this WebApplication app)
     {
-        
+        app.MapGet("allRoutes", GetAllRoutesAsync);
+        app.MapGet("route", GetRouteByIdAsync);
+        app.MapPost("route", AddRouteAsync);
+        app.MapPut("route", UpdateRouteAsync);
+        app.MapDelete("route", DeleteRouteAsync);
     }
     private static async Task<IResult> GetAllRoutesAsync(
         IRouteRepository routeRepository) {
@@ -38,12 +42,12 @@ public static class RoutesApi
         }
     }
     private static async Task<IResult> AddRouteAsync(
-        RouteDto routeDto,
+        RouteLinesDto routeDto,
         IRouteRepository routeRepository,
         IMapper mapper) {
         try
         {
-            var route = mapper.Map<TimetableMakerDataAccess.Models.Route>(routeDto);
+            var route = mapper.Map<RouteLines>(routeDto);
             var rowsAffected = await routeRepository.AddAsync(route);
             if (rowsAffected > 0)
                 return Results.NoContent();
@@ -56,12 +60,12 @@ public static class RoutesApi
     }
     private static async Task<IResult> UpdateRouteAsync(
         int id,
-        RouteDto routeDto,
+        RouteLinesDto routeDto,
         IRouteRepository routeRepository,
         IMapper mapper){
         try
         {
-            var route = mapper.Map<TimetableMakerDataAccess.Models.Route>(routeDto);
+            var route = mapper.Map<TimetableMakerDataAccess.Models.RouteLines>(routeDto);
             route.Id = id;
             var rowsAffected = await routeRepository.UpdateAsync(route);
             if (rowsAffected > 0)
