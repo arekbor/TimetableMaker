@@ -8,3 +8,4 @@ TimetableMakerDatabase/TimetableMakerDatabase.jfm
 TimetableMakerDatabase/TimetableMakerDatabase.sqlproj
 TimetableMakerDatabase/TimetableMakerDatabase.sqlproj.user
 TimetableMakerApi/*.json
+TimetableMakerDatabase/TimetableMakerApi.csproj
