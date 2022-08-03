@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using TimetableMakerDataAccess.Contracts;
 using TimetableMakerDataAccess.Dtos;
 using TimetableMakerDataAccess.Models;
@@ -14,6 +15,23 @@ public static class RoutesApi
         app.MapPost("route", AddRouteAsync);
         app.MapPut("route", UpdateRouteAsync);
         app.MapDelete("route", DeleteRouteAsync);
+        app.MapDelete("deleteRoutesByLineId", DeleteRoutesByLineId);
+    }
+    [Authorize]
+    private static async Task<IResult> DeleteRoutesByLineId(
+        int id,
+        IRouteRepository routeRepository){
+        try
+        {
+            var rowsAffected = await routeRepository.DeleteAllRoutesByLineId(id);
+            if (rowsAffected > 0)
+                return Results.NoContent();
+            return Results.BadRequest();
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
     }
     private static async Task<IResult> GetAllRoutesAsync(
         IRouteRepository routeRepository) {

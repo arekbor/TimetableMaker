@@ -15,40 +15,10 @@ public class LineRepository : ILineRepository
     {
         _configuration = configuration;
     }
-
-    public async Task<IEnumerable<LineModeDto>> GetAllLineRoutesAsync()
-    {
-        //TODO fix sql code
-        const string sql = @"
-        select [Lines].[id] as lineId, [lineName], [type], [model], [seats]
-        from [Modes]
-        inner join [Lines]
-        on [Modes].[id] = [Lines].[modeId];
-
-        select [name], [zone], format([arrivalTime], N'hh\:mm\:ss') as arrivalTime
-        from [Locations]
-        inner join [Routes]
-        on [Locations].id = [Routes].[locationId];";
-
-        using var dbConn =
-            new SqlConnection(_configuration.GetConnectionString(
-                ConfigurationRepository.ConfigurationDatabase));
-
-        using var multipleQuery = await dbConn.QueryMultipleAsync(sql);
-
-        var resultLineModeDto = await multipleQuery.ReadAsync<LineModeDto>();
-
-        var routeLocationDto = await multipleQuery.ReadAsync<RouteLocationDto>();
-        
-        resultLineModeDto.ToList()
-            .ForEach(lineModeDto => lineModeDto.RouteLocationDto = routeLocationDto.ToList());
-        return resultLineModeDto;
-    }
-
     public async Task<LineModeDto> GetLineRoutesByIdAsync(int id)
     {
         const string sql = @"
-        select [lineName], [type], [model], [seats]
+        select [Lines].[id] as lineId, [lineName], [type], [model], [seats]
         from [Modes]
         inner join [Lines]
         on [Modes].[id] = [Lines].[modeId]

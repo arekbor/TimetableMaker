@@ -28,6 +28,18 @@ public class RouteRepository : IRouteRepository
         return await dbConn.ExecuteAsync(sql, entity);
     }
 
+    public async Task<int> DeleteAllRoutesByLineId(int id)
+    {
+        const string sql = @"
+        delete from [Routes] 
+        where [lineId] = @id;";
+
+        using var dbConn =
+            new SqlConnection(_configuration.GetConnectionString(
+                ConfigurationRepository.ConfigurationDatabase));
+
+        return await dbConn.ExecuteAsync(sql, new { id = id });
+    }
     public async Task<int> DeleteAsync(int id)
     {
         const string sql = @"
